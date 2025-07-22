@@ -123,7 +123,9 @@
     <div class="subtitle">2Q25 Accomplishments</div>
   </div>
 
-  $1
+  <div class="display-container">
+    <div id="number-display">?</div>
+  </div>
 
   <div class="icebreaker">
     <div id="active-group-label" class="subtitle">Current Group: ?</div>
@@ -235,12 +237,6 @@
     spinThroughOptions(numbers, ball, 2000 + idx * 150, (final) => usedNumbers.add(final));
   });
 }
-
-  groupLabel.innerText = `Current Group: ${activeGroup}`;
-  remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
-
-}
-      }
 
       const nameDisplay = document.getElementById("number-display");
       const questionDisplay = document.getElementById("icebreaker-question");
