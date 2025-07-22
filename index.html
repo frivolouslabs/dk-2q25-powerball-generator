@@ -123,8 +123,12 @@
     <div class="subtitle">2Q25 Accomplishments</div>
   </div>
 
-  <div class="display-container">
-    <div id="number-display">?</div>
+  $1
+
+  <div class="icebreaker">
+    <div id="active-group-label" class="subtitle">Current Group: ?</div>
+    <div id="remaining-names" style="font-size: 1em; color: #ccc; margin-top: 5px;">Remaining: ?</div>
+  </div>
     <button onclick="generateName()"><strong>Who's Next?</strong></button>
   </div>
 
@@ -142,12 +146,17 @@
   </div>
 
   <script>
-    let availableNames = [
-      "Jack Wilkin", "Michael Nyc", "Jacob Rossner", "Alex Rich", "Paolo Mento",
-      "Sarah Huffman", "TJ Smith", "Zach Betron", "Christian Rogers", "Trevor Van Allen",
-      "Sam Desimone", "Julia Frisch", "Kristopher Perez", "Ryan Taggard",
-      "Andrew Canino", "Jeremy Paton", "Zoe Hseih", "Chris Grondin"
-    ];
+    const teamGroups = {
+  "Casino Marketing Analytics": ["Kristopher Perez", "Zoe Hseih", "Ryan Sugrue"],
+  "M.E.A.T": ["Christian Rogers", "Trevor Van Allen", "Sam Desimone"],
+  "Central Forecasting": ["Sarah Huffman", "TJ Smith", "Zach Betron"],
+  "Consumer Insights & Brand Analytics": ["Paolo Mento"],
+  "Sports Marketing Analytics": ["Michael Nyc", "Jacob Rossner", "Julia Frisch", "Alex Rich"],
+  "Partnership Analytics": ["Jack Wilkin"],
+  "CRM Analytics": ["Mike Calabro", "Taylor Caruso", "Chris Grondin", "Dan Reph", "Rileigh Farragher", "JJ Early", "Alex Rich", "Nick Trenholm", "Joey Canning"],
+  "Digital Marketing Analytics": ["Sam Marteka", "Hannah Waleski", "Melanie Whisler"],
+  "Customer Economics": ["Jeremy Paton", "Ryan Taggard", "Andrew Canino"]
+};
 
     const icebreakerQuestions = [
       "Best movie you saw in 2Q25",
@@ -185,18 +194,33 @@
     }
 
     function generateName() {
-      if (availableNames.length === 0) {
-        document.getElementById("number-display").innerText = "All Done!";
-        document.getElementById("icebreaker-question").innerText = "";
-        return;
+  const groups = Object.keys(teamGroups);
+  let activeGroup = groups.find(group => teamGroups[group].length > 0);
+
+  const groupLabel = document.getElementById("active-group-label");
+  const remainingLabel = document.getElementById("remaining-names");
+
+  if (!activeGroup) {
+    document.getElementById("number-display").innerText = "All Done!";
+    document.getElementById("icebreaker-question").innerText = "";
+    groupLabel.innerText = "All Groups Complete!";
+    remainingLabel.innerText = "";
+    return;
+  }
+
+  groupLabel.innerText = `Current Group: ${activeGroup}`;
+  remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
+
+}
       }
 
       const nameDisplay = document.getElementById("number-display");
       const questionDisplay = document.getElementById("icebreaker-question");
 
-      spinThroughOptions(availableNames, nameDisplay, 2000, (finalName) => {
-        availableNames = availableNames.filter(name => name !== finalName);
-      });
+      spinThroughOptions(teamGroups[activeGroup], nameDisplay, 2000, (finalName) => {
+  teamGroups[activeGroup] = teamGroups[activeGroup].filter(name => name !== finalName);
+    remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
+});
 
       spinThroughOptions(icebreakerQuestions, questionDisplay, 2000);
 
