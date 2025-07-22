@@ -123,15 +123,15 @@
     <div class="subtitle">2Q25 Accomplishments</div>
   </div>
 
-  <div class="display-container">
-    <div id="number-display">?</div>
-  </div>
+  
 
   <div class="icebreaker">
     <div id="active-group-label" class="subtitle">Current Group: ?</div>
     <div id="remaining-names" style="font-size: 1em; color: #ccc; margin-top: 5px;">Remaining: ?</div>
-  </div>
+  <div class="display-container">
+    <div id="number-display">?</div>
     <button onclick="generateName()"><strong>Who's Next?</strong></button>
+  </div>
   </div>
 
   <div class="powerball-row">
@@ -148,7 +148,7 @@
   </div>
 
   <script>
-    const teamGroups = {
+const teamGroups = {
   "Casino Marketing Analytics": ["Kristopher Perez", "Zoe Hseih", "Ryan Sugrue"],
   "M.E.A.T": ["Christian Rogers", "Trevor Van Allen", "Sam Desimone"],
   "Central Forecasting": ["Sarah Huffman", "TJ Smith", "Zach Betron"],
@@ -160,51 +160,45 @@
   "Customer Economics": ["Jeremy Paton", "Ryan Taggard", "Andrew Canino"]
 };
 
-    const icebreakerQuestions = [
-      "Best movie you saw in 2Q25",
-      "Favorite ice cream flavor you had in 2Q25",
-      "Most surprising thing you learned on the job",
-      "Coolest new app, tool, or resource you discovered",
-      "Most hilarious use case for ChatGPT you had",
-      "Song of the summer?"
-    ];
+const icebreakerQuestions = [
+  "Best movie you saw in 2Q25",
+  "Favorite ice cream flavor you had in 2Q25",
+  "Most surprising thing you learned on the job",
+  "Coolest new app, tool, or resource you discovered",
+  "Most hilarious use case for ChatGPT you had",
+  "Song of the summer?"
+];
 
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-    function generatePowerballNumbers() {
-      let numbers = new Set();
-      while (numbers.size < 5) {
-        numbers.add(getRandomInt(1, 69));
-      }
-      return Array.from(numbers);
-    }
+function spinThroughOptions(options, element, delay, callback) {
+  let i = 0;
+  const interval = setInterval(() => {
+    element.innerHTML = '<strong>' + options[i % options.length] + '</strong>';
+    i++;
+  }, 75);
+  setTimeout(() => {
+    clearInterval(interval);
+    const final = options[Math.floor(Math.random() * options.length)];
+    element.innerHTML = '<strong>' + final + '</strong>';
+    if (callback) callback(final);
+  }, delay);
+}
 
-    function spinThroughOptions(options, element, delay, callback) {
-      let i = 0;
-      const interval = setInterval(() => {
-        element.innerHTML = '<strong>' + options[i % options.length] + '</strong>';
-        i++;
-      }, 75);
-      setTimeout(() => {
-        clearInterval(interval);
-        const final = options[Math.floor(Math.random() * options.length)];
-        element.innerHTML = '<strong>' + final + '</strong>';
-        if (callback) callback(final);
-      }, delay);
-    }
-
-    function generateName() {
+function generateName() {
   const groups = Object.keys(teamGroups);
   let activeGroup = groups.find(group => teamGroups[group].length > 0);
 
   const groupLabel = document.getElementById("active-group-label");
   const remainingLabel = document.getElementById("remaining-names");
+  const nameDisplay = document.getElementById("number-display");
+  const questionDisplay = document.getElementById("icebreaker-question");
 
   if (!activeGroup) {
-    document.getElementById("number-display").innerText = "All Done!";
-    document.getElementById("icebreaker-question").innerText = "";
+    nameDisplay.innerText = "All Done!";
+    questionDisplay.innerText = "";
     groupLabel.innerText = "All Groups Complete!";
     remainingLabel.innerText = "";
     return;
@@ -213,15 +207,12 @@
   groupLabel.innerText = `Current Group: ${activeGroup}`;
   remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
 
-  const nameDisplay = document.getElementById("number-display");
-  const questionDisplay = document.getElementById("icebreaker-question");
-
-  spinThroughOptions(teamGroups[activeGroup], nameDisplay, 2000, (finalName) => {
+  spinThroughOptions(teamGroups[activeGroup], nameDisplay, 1000, (finalName) => {
     teamGroups[activeGroup] = teamGroups[activeGroup].filter(name => name !== finalName);
     remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
   });
 
-  spinThroughOptions(icebreakerQuestions, questionDisplay, 2000);
+  spinThroughOptions(icebreakerQuestions, questionDisplay, 1000);
 
   const powerballs = [
     document.getElementById("pb1"),
@@ -234,34 +225,9 @@
   const usedNumbers = new Set();
   powerballs.forEach((ball, idx) => {
     const numbers = Array.from({ length: 69 }, (_, i) => i + 1).filter(n => !usedNumbers.has(n));
-    spinThroughOptions(numbers, ball, 2000 + idx * 150, (final) => usedNumbers.add(final));
+    spinThroughOptions(numbers, ball, 1000 + idx * 150, (final) => usedNumbers.add(final));
   });
 }
-
-      const nameDisplay = document.getElementById("number-display");
-      const questionDisplay = document.getElementById("icebreaker-question");
-
-      spinThroughOptions(teamGroups[activeGroup], nameDisplay, 2000, (finalName) => {
-  teamGroups[activeGroup] = teamGroups[activeGroup].filter(name => name !== finalName);
-    remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
-});
-
-      spinThroughOptions(icebreakerQuestions, questionDisplay, 2000);
-
-      const powerballs = [
-        document.getElementById("pb1"),
-        document.getElementById("pb2"),
-        document.getElementById("pb3"),
-        document.getElementById("pb4"),
-        document.getElementById("pb5")
-      ];
-
-      const usedNumbers = new Set();
-      powerballs.forEach((ball, idx) => {
-        const numbers = Array.from({ length: 69 }, (_, i) => i + 1).filter(n => !usedNumbers.has(n));
-        spinThroughOptions(numbers, ball, 2000 + idx * 150, (final) => usedNumbers.add(final));
-      });
-    }
-  </script>
+</script>
 </body>
 </html>
