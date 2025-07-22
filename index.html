@@ -211,6 +211,34 @@
   groupLabel.innerText = `Current Group: ${activeGroup}`;
   remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
 
+  const nameDisplay = document.getElementById("number-display");
+  const questionDisplay = document.getElementById("icebreaker-question");
+
+  spinThroughOptions(teamGroups[activeGroup], nameDisplay, 2000, (finalName) => {
+    teamGroups[activeGroup] = teamGroups[activeGroup].filter(name => name !== finalName);
+    remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
+  });
+
+  spinThroughOptions(icebreakerQuestions, questionDisplay, 2000);
+
+  const powerballs = [
+    document.getElementById("pb1"),
+    document.getElementById("pb2"),
+    document.getElementById("pb3"),
+    document.getElementById("pb4"),
+    document.getElementById("pb5")
+  ];
+
+  const usedNumbers = new Set();
+  powerballs.forEach((ball, idx) => {
+    const numbers = Array.from({ length: 69 }, (_, i) => i + 1).filter(n => !usedNumbers.has(n));
+    spinThroughOptions(numbers, ball, 2000 + idx * 150, (final) => usedNumbers.add(final));
+  });
+}
+
+  groupLabel.innerText = `Current Group: ${activeGroup}`;
+  remainingLabel.innerText = `Remaining: ${teamGroups[activeGroup].join(', ')}`;
+
 }
       }
 
